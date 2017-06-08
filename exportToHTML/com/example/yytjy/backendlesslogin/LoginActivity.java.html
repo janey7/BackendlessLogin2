@@ -1,0 +1,172 @@
+<html>
+<head>
+<title>LoginActivity.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: rgb(0,0,0); font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { color: rgb(0,0,0); }
+.s2 { color: rgb(128,128,128); font-style: italic; }
+.s3 { color: rgb(0,128,0); font-weight: bold; }
+.s4 { color: rgb(0,0,255); }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#C0C0C0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+LoginActivity.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">package </span><span class="s1">com.example.yytjy.backendlesslogin; 
+ 
+</span><span class="s0">import </span><span class="s1">android.content.Intent; 
+</span><span class="s0">import </span><span class="s1">android.os.Bundle; 
+</span><span class="s0">import </span><span class="s1">android.support.annotation.MainThread; 
+</span><span class="s0">import </span><span class="s1">android.support.v7.app.AppCompatActivity; 
+</span><span class="s0">import </span><span class="s1">android.text.SpannableString; 
+</span><span class="s0">import </span><span class="s1">android.text.Spanned; 
+</span><span class="s0">import </span><span class="s1">android.text.method.LinkMovementMethod; 
+</span><span class="s0">import </span><span class="s1">android.text.style.ClickableSpan; 
+</span><span class="s0">import </span><span class="s1">android.util.Log; 
+</span><span class="s0">import </span><span class="s1">android.view.View; 
+</span><span class="s0">import </span><span class="s1">android.widget.Button; 
+</span><span class="s0">import </span><span class="s1">android.widget.EditText; 
+</span><span class="s0">import </span><span class="s1">android.widget.ImageView; 
+</span><span class="s0">import </span><span class="s1">android.widget.TextView; 
+</span><span class="s0">import </span><span class="s1">android.widget.Toast; 
+ 
+</span><span class="s0">import </span><span class="s1">com.backendless.Backendless; 
+</span><span class="s0">import </span><span class="s1">com.backendless.BackendlessUser; 
+</span><span class="s0">import </span><span class="s1">com.backendless.async.callback.AsyncCallback; 
+</span><span class="s0">import </span><span class="s1">com.backendless.exceptions.BackendlessFault; 
+ 
+ 
+</span><span class="s2">/** 
+ * Created by yytjy on 5/30/2017. 
+ */</span><span class="s1"> 
+ 
+</span><span class="s0">public class </span><span class="s1">LoginActivity </span><span class="s0">extends </span><span class="s1">AppCompatActivity { 
+    </span><span class="s0">public static final </span><span class="s1">String APPLICATION_ID = </span><span class="s3">&quot;02FC23DC-BA34-FE97-FF77-A54ED1203000&quot;</span><span class="s1">; 
+    </span><span class="s0">public static final </span><span class="s1">String SECRET_KEY = </span><span class="s3">&quot;B9BF82A4-888A-1A5D-FFA0-C2A972584600&quot;</span><span class="s1">; 
+    </span><span class="s0">public static final </span><span class="s1">String VERSION = </span><span class="s3">&quot;v1&quot;</span><span class="s1">; 
+    </span><span class="s0">public static final int </span><span class="s1">REGISTER_REQUEST_CODE = </span><span class="s4">1</span><span class="s1">; 
+    </span><span class="s0">private static final </span><span class="s1">String TAG = LoginActivity.</span><span class="s0">class</span><span class="s1">.getSimpleName(); 
+    </span><span class="s0">private </span><span class="s1">ImageView tigerIcon; 
+    </span><span class="s0">private </span><span class="s1">Button signIn, signUp; 
+    </span><span class="s0">private </span><span class="s1">EditText emailField, passwordField; 
+    </span><span class="s0">private </span><span class="s1">TextView forgetpassword, registration, guest,title; 
+ 
+    @Override 
+    </span><span class="s0">protected void </span><span class="s1">onCreate(Bundle savedInstanceState) { 
+        </span><span class="s0">super</span><span class="s1">.onCreate(savedInstanceState); 
+        setContentView(R.layout.activity_login); 
+ 
+        Backendless.initApp(</span><span class="s0">this</span><span class="s1">, APPLICATION_ID, SECRET_KEY, VERSION); 
+        wireWidgets(); 
+        onClickListener(); 
+        </span><span class="s2">//makeRegistrationLink();</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s2">//TODO: find out why the setSpan is out of bound</span><span class="s1"> 
+ 
+</span><span class="s2">//    private void makeRegistrationLink() {</span><span class="s1"> 
+</span><span class="s2">//        SpannableString registrationPrompt = new SpannableString(registration.toString());</span><span class="s1"> 
+</span><span class="s2">//        ClickableSpan clickableSpan = new ClickableSpan() {</span><span class="s1"> 
+</span><span class="s2">//            @Override</span><span class="s1"> 
+</span><span class="s2">//            public void onClick(View view) {</span><span class="s1"> 
+</span><span class="s2">//                startRegistrationLink();</span><span class="s1"> 
+</span><span class="s2">//            }</span><span class="s1"> 
+</span><span class="s2">//        };</span><span class="s1"> 
+</span><span class="s2">//</span><span class="s1"> 
+</span><span class="s2">//        String linkText = &quot;register&quot;;</span><span class="s1"> 
+</span><span class="s2">//        int linkStartIndex = registrationPrompt.toString().indexOf(linkText);</span><span class="s1"> 
+</span><span class="s2">//        int linkEndIndex = linkStartIndex + linkText.length();</span><span class="s1"> 
+</span><span class="s2">//        registrationPrompt.setSpan(clickableSpan, linkStartIndex+1, linkEndIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);</span><span class="s1"> 
+</span><span class="s2">//</span><span class="s1"> 
+</span><span class="s2">//        TextView registerPromptView = (TextView) findViewById(R.id.textView_signUp);</span><span class="s1"> 
+</span><span class="s2">//        registerPromptView.setText(registrationPrompt);</span><span class="s1"> 
+</span><span class="s2">//        registerPromptView.setMovementMethod(LinkMovementMethod.getInstance());</span><span class="s1"> 
+</span><span class="s2">//</span><span class="s1"> 
+</span><span class="s2">//</span><span class="s1"> 
+</span><span class="s2">//    }</span><span class="s1"> 
+ 
+    </span><span class="s0">private void </span><span class="s1">startRegistrationLink() { 
+        Intent registrationIntent = </span><span class="s0">new </span><span class="s1">Intent(</span><span class="s0">this</span><span class="s1">, SignUpActivity.</span><span class="s0">class</span><span class="s1">); 
+        startActivityForResult(registrationIntent, REGISTER_REQUEST_CODE); 
+ 
+    } 
+ 
+ 
+    </span><span class="s0">private void </span><span class="s1">wireWidgets() { 
+        tigerIcon = (ImageView) findViewById(R.id.imageView); 
+        signIn = (Button) findViewById(R.id.button_signIn); 
+        signUp = (Button) findViewById(R.id.button_signUp) ; 
+        emailField = (EditText) findViewById(R.id.editText_email); 
+        passwordField = (EditText) findViewById(R.id.editText_password); 
+        forgetpassword = (TextView) findViewById(R.id.textView_forgetPassword); 
+        registration = (TextView) findViewById(R.id.textView_signUp); 
+        guest = (TextView) findViewById(R.id.textView_guestBrowse); 
+        title = (TextView) findViewById(R.id.textView_tigerNewspaper); 
+    } 
+ 
+    </span><span class="s0">private void </span><span class="s1">onClickListener(){ 
+        signUp.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() { 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onClick(View view) { 
+                startRegistrationLink(); 
+            } 
+        }); 
+ 
+        signIn.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() { 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onClick(View view) { 
+                emailField = (EditText) findViewById(R.id.editText_email); 
+                passwordField = (EditText) findViewById(R.id.editText_password); 
+                CharSequence email = emailField.getText(); 
+                CharSequence password = passwordField.getText(); 
+ 
+                Backendless.UserService.login( email.toString(), password.toString(), </span><span class="s0">new </span><span class="s1">AsyncCallback&lt;BackendlessUser&gt;() 
+                { 
+                    </span><span class="s0">public void </span><span class="s1">handleResponse( BackendlessUser user ) 
+                    { 
+                        </span><span class="s2">// user has been logged in</span><span class="s1"> 
+                        Log.d(TAG, </span><span class="s3">&quot;onCreate: User registration successful&quot;</span><span class="s1">); 
+                        Toast.makeText(LoginActivity.</span><span class="s0">this</span><span class="s1">, </span><span class="s3">&quot;User login successful!&quot;</span><span class="s1">, 
+                                Toast.LENGTH_SHORT).show(); 
+                    } 
+ 
+                    </span><span class="s0">public void </span><span class="s1">handleFault( BackendlessFault fault ) 
+                    { 
+                        </span><span class="s2">// login failed, to get the error code call fault.getCode()</span><span class="s1"> 
+                        Log.e(TAG, </span><span class="s3">&quot;onCreate: User login FAILED: &quot; </span><span class="s1">+ fault.getCode()); 
+                    } 
+                }); 
+                </span><span class="s2">//Backendless.UserService.loginWithFacebook();</span><span class="s1"> 
+                afterSignIn(); 
+            } 
+        }); 
+ 
+        guest.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() { 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onClick(View view) { 
+                guestBrowse(); 
+            } 
+        }); 
+    } 
+ 
+    </span><span class="s0">private void </span><span class="s1">guestBrowse() { 
+        Intent guestIntent = </span><span class="s0">new </span><span class="s1">Intent(</span><span class="s0">this</span><span class="s1">, MainActivity.</span><span class="s0">class</span><span class="s1">); 
+        startActivity(guestIntent); 
+    } 
+ 
+    </span><span class="s0">private void </span><span class="s1">afterSignIn() { 
+        Intent mainIntent = </span><span class="s0">new </span><span class="s1">Intent(</span><span class="s0">this</span><span class="s1">, MainActivity.</span><span class="s0">class</span><span class="s1">); 
+        startActivity(mainIntent); 
+    } 
+ 
+ 
+} 
+</span></pre>
+</body>
+</html>
